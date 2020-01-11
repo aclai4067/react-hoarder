@@ -1,12 +1,32 @@
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch,
+} from 'react-router-dom';
 import './App.scss';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import authData from '../helpers/data/authData';
 import Auth from '../components/pages/Auth/Auth';
 import MyNav from '../components/shared/MyNav/MyNav';
+import Home from '../components/pages/Home/Home';
+import NewStuff from '../components/pages/NewStuff/NewStuff';
+import MyStuff from '../components/pages/MyStuff/MyStuff';
+import SingleStuff from '../components/pages/SingleStuff/SingleStuff';
+import EditStuff from '../components/pages/EditStuff/EditStuff';
 
 authData.firebaseApp();
+
+const PublicRoute = ({ component: Component, authed, ...rest }) => {
+  const routeChecker = (props) => (authed === false ? <Component {...props} {...rest}/> : <Redirect to={{ pathname: '/', state: { from: props.location } }} />);
+  return <Route {...rest} render={(props) => routeChecker(props)} />;
+};
+const PrivateRoute = ({ component: Component, authed, ...rest }) => {
+  const routeChecker = (props) => (authed === true ? <Component {...props} {...rest}/> : <Redirect to={{ pathname: '/auth', state: { from: props.location } }} />);
+  return <Route {...rest} render={(props) => routeChecker(props)} />;
+};
 
 class App extends React.Component {
   state = {
@@ -32,8 +52,17 @@ class App extends React.Component {
 
     return (
       <div className="App">
-        <MyNav authed={authed} />
-        { !authed && <Auth /> }
+        <Router>
+          <MyNav authed={authed} />
+          <Switch>
+            <PrivateRoute path='/' exact component={Home} authed={authed} />
+            <PublicRoute path='/auth' exact component={Auth} authed={authed} />
+            <PrivateRoute path='/stuff' exact component={MyStuff} authed={authed} />
+            <PrivateRoute path='/stuff/new' exact component={NewStuff} authed={authed} />
+            <PrivateRoute path='/stuff/:stuffId' exact component={SingleStuff} authed={authed} />
+            <PrivateRoute path='/stuff/:stuffId/edit' exact component={EditStuff} authed={authed} />
+          </Switch>
+        </Router>
       </div>
     );
   }
