@@ -1,0 +1,15 @@
+.Items{
+  background-color: rgba(213, 213, 219, 0.384);
+  border: 2px solid rgb(66, 56, 68);
+  border-radius: 15px;
+  
+  img{
+    border-radius: 15px 15px 5px 5px;
+  }
+
+  .deleteBtn{
+    position: absolute;
+    top: 15px;
+    right: 15px;
+  }
+}
