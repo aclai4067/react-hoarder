@@ -9,7 +9,7 @@ class MyStuff extends React.Component {
     items: [],
   }
 
-  componentDidMount() {
+  getStuff = () => {
     const uid = authData.getUid();
     stuffData.getStuffByUid(uid)
       .then((stuff) => {
@@ -17,9 +17,20 @@ class MyStuff extends React.Component {
       }).catch((err) => console.error('error from MyStuff', err));
   }
 
+  componentDidMount() {
+    this.getStuff();
+  }
+
+  deleteStuff = (itemId) => {
+    stuffData.removeStuff(itemId)
+      .then(() => {
+        this.getStuff();
+      }).catch((err) => console.error('error from mystuff delete', err));
+  }
+
   render() {
     const { items } = this.state;
-    const buildItems = items.map((item) => <Items key={item.id} item={item} />);
+    const buildItems = items.map((item) => <Items key={item.id} item={item} deleteStuff={this.deleteStuff} />);
 
     return (
       <div className='MyStuff'>

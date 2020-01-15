@@ -1,11 +1,18 @@
 import './Items.scss';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import itemShape from '../../../helpers/propz/itemShape';
 
 class Items extends React.Component {
   static propTypes = {
     item: itemShape.itemShape,
+    deleteStuff: PropTypes.func,
+  }
+
+  deleteItemEvent = () => {
+    const { item, deleteStuff } = this.props;
+    deleteStuff(item.id);
   }
 
   render() {
@@ -13,7 +20,7 @@ class Items extends React.Component {
 
     return (
       <div className='Items card col-3 m-2 p-0'>
-        <button className='deleteBtn btn btn-danger close'>X</button>
+        <button className='deleteBtn btn btn-danger close' onClick={this.deleteItemEvent}>X</button>
         <img className='card-img' src={item.itemImage} alt={item.itemName} />
         <div className='card-body'>
           <h5 className='card-title'>{item.itemName}</h5>
