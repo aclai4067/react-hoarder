@@ -12,10 +12,9 @@ import authData from '../helpers/data/authData';
 import Auth from '../components/pages/Auth/Auth';
 import MyNav from '../components/shared/MyNav/MyNav';
 import Home from '../components/pages/Home/Home';
-import NewStuff from '../components/pages/NewStuff/NewStuff';
+import StuffForm from '../components/pages/StuffForm/StuffForm';
 import MyStuff from '../components/pages/MyStuff/MyStuff';
 import SingleStuff from '../components/pages/SingleStuff/SingleStuff';
-import EditStuff from '../components/pages/EditStuff/EditStuff';
 
 authData.firebaseApp();
 
@@ -58,9 +57,9 @@ class App extends React.Component {
             <PrivateRoute path='/' exact component={Home} authed={authed} />
             <PublicRoute path='/auth' exact component={Auth} authed={authed} />
             <PrivateRoute path='/stuff' exact component={MyStuff} authed={authed} />
-            <PrivateRoute path='/stuff/new' exact component={NewStuff} authed={authed} />
+            <PrivateRoute path='/stuff/new' exact component={StuffForm} authed={authed} />
             <PrivateRoute path='/stuff/:stuffId' exact component={SingleStuff} authed={authed} />
-            <PrivateRoute path='/stuff/:stuffId/edit' exact component={EditStuff} authed={authed} />
+            <PrivateRoute path='/stuff/:stuffId/edit' exact component={StuffForm} authed={authed} />
           </Switch>
         </Router>
       </div>
