@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 class MyNav extends React.Component {
   static propTypes = {
     authed: PropTypes.bool,
+    editMode: PropTypes.bool,
   }
 
   logoutEvent = (e) => {
@@ -17,7 +18,7 @@ class MyNav extends React.Component {
 
   render() {
     const navBuilder = () => {
-      const { authed } = this.props;
+      const { authed, editMode } = this.props;
       if (authed) {
         return (
           <ul className='navbar-nav ml-auto'>
@@ -27,9 +28,13 @@ class MyNav extends React.Component {
             <li className='nav-item'>
               <Link className='nav-link' to='/stuff'>My Stuff</Link>
             </li>
-            <li className='nav-item'>
-              <Link className='nav-link' to='/stuff/new'>New</Link>
-            </li>
+            {
+              (!editMode) && (
+                <li className='nav-item'>
+                  <Link className='nav-link hide' to='/stuff/new'>New</Link>
+                </li>
+              )
+            }
             <li className='nav-item'>
               <button className='btn btn-outline-dark' onClick={this.logoutEvent}>Log Out</button>
             </li>

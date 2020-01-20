@@ -1,5 +1,6 @@
 import './StuffForm.scss';
 import React from 'react';
+import PropTypes from 'prop-types';
 import authData from '../../../helpers/data/authData';
 import stuffData from '../../../helpers/data/stuffData';
 
@@ -8,6 +9,31 @@ class StuffForm extends React.Component {
     myItemName: '',
     myItemImage: '',
     myItemDescription: '',
+  }
+
+  static propTypes = {
+    toggleEditMode: PropTypes.func,
+  }
+
+  componentDidMount() {
+    const { stuffId } = this.props.match.params;
+    const { toggleEditMode } = this.props;
+    if (stuffId) {
+      toggleEditMode();
+      stuffData.getStuffById(stuffId)
+        .then((response) => {
+          const stuff = response.data;
+          this.setState({ myItemName: stuff.itemName, myItemImage: stuff.itemImage, myItemDescription: stuff.itemDescription });
+        }).catch((err) => console.error('error from stuffForm componentDidMount', err));
+    }
+  }
+
+  componentWillUnmount() {
+    const { stuffId } = this.props.match.params;
+    if (stuffId) {
+      const { toggleEditMode } = this.props;
+      toggleEditMode();
+    }
   }
 
   saveNewItem = (e) => {
@@ -23,6 +49,22 @@ class StuffForm extends React.Component {
       .then(() => {
         this.props.history.push('/stuff');
       }).catch((err) => console.error('error from saveNewItem', err));
+  }
+
+  updateItem = (e) => {
+    e.preventDefault();
+    const uid = authData.getUid();
+    const { stuffId } = this.props.match.params;
+    const updatedItem = {
+      itemName: this.state.myItemName,
+      itemImage: this.state.myItemImage,
+      itemDescription: this.state.myItemDescription,
+      uid,
+    };
+    stuffData.editStuff(stuffId, updatedItem)
+      .then(() => {
+        this.props.history.push('/stuff');
+      }).catch((err) => console.error('error from updateItem', err));
   }
 
   changeName = (e) => {
@@ -41,6 +83,8 @@ class StuffForm extends React.Component {
   }
 
   render() {
+    const { stuffId } = this.props.match.params;
+
     return (
       <div className='StuffForm'>
         <h1>My Stuff</h1>
@@ -57,7 +101,9 @@ class StuffForm extends React.Component {
             <label htmlFor='descriptionInput'>Description</label>
             <input type='text' className='form-control' id='descriptionInput' value={this.state.myItemDescription} onChange={this.changeDescription} placeholder='Enter a description of your item' />
           </div>
-          <button className='btn btn-dark' onClick={this.saveNewItem}>Save</button>
+          {
+            (stuffId) ? (<button className='btn btn-dark' onClick={this.updateItem}>Update</button>) : (<button className='btn btn-dark' onClick={this.saveNewItem}>Save</button>)
+          }
         </form>
       </div>
     );
