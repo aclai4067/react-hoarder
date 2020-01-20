@@ -24,9 +24,12 @@ const removeStuff = (itemId) => axios.delete(`${baseUrl}/items/${itemId}.json`);
 
 const saveStuff = (itemObj) => axios.post(`${baseUrl}/items.json`, itemObj);
 
+const editStuff = (itemId, itemObj) => axios.put(`${baseUrl}/items/${itemId}.json`, itemObj);
+
 export default {
   getStuffByUid,
   getStuffById,
   removeStuff,
   saveStuff,
+  editStuff,
 };

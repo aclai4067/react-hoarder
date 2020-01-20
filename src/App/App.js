@@ -30,6 +30,7 @@ const PrivateRoute = ({ component: Component, authed, ...rest }) => {
 class App extends React.Component {
   state = {
     authed: false,
+    editMode: false,
   }
 
   componentDidMount() {
@@ -42,24 +43,28 @@ class App extends React.Component {
     });
   }
 
+  toggleEditMode = () => {
+    this.setState({ editMode: !this.state.editMode });
+  }
+
   componentWillUnmount() {
     this.removeListener();
   }
 
   render() {
-    const { authed } = this.state;
+    const { authed, editMode } = this.state;
 
     return (
       <div className="App">
         <Router>
-          <MyNav authed={authed} />
+          <MyNav authed={authed} editMode={editMode} />
           <Switch>
             <PrivateRoute path='/' exact component={Home} authed={authed} />
             <PublicRoute path='/auth' exact component={Auth} authed={authed} />
             <PrivateRoute path='/stuff' exact component={MyStuff} authed={authed} />
             <PrivateRoute path='/stuff/new' exact component={StuffForm} authed={authed} />
             <PrivateRoute path='/stuff/:stuffId' exact component={SingleStuff} authed={authed} />
-            <PrivateRoute path='/stuff/:stuffId/edit' exact component={StuffForm} authed={authed} />
+            <PrivateRoute path='/stuff/:stuffId/edit' exact component={StuffForm} authed={authed} toggleEditMode={this.toggleEditMode} />
           </Switch>
         </Router>
       </div>
